@@ -69,6 +69,7 @@
 @property (nonatomic, weak) CDVWKInAppBrowser* navigationDelegate;
 @property (nonatomic) NSURL* currentURL;
 
+- (void)setSoftClose:(BOOL)soft;
 - (void)softclose;
 - (void)close;
 - (void)navigateTo:(NSURL*)url;
