@@ -25,7 +25,7 @@
 {
     if (self = [super init]) {
         // default values
-        self.location = NO;
+        self.location = YES;
         self.toolbar = YES;
         self.closebuttoncaption = nil;
         self.toolbarposition = @"bottom";
