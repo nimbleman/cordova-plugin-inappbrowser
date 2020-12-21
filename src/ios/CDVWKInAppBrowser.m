@@ -653,7 +653,7 @@ static CDVWKInAppBrowser* instance = nil;
     }
 }
 
-- (void)browserExit
+- (void)browserSoftExit
 {
     if (self.callbackId != nil) {
        	NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
@@ -668,7 +668,7 @@ static CDVWKInAppBrowser* instance = nil;
     self->tmpWindow = nil;
 }
 
-- (void)browserSoftExit
+- (void)browserExit
 {
     if (self.callbackId != nil) {
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
