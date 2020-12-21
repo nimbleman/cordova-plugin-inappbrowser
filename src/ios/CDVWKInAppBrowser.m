@@ -656,8 +656,10 @@ static CDVWKInAppBrowser* instance = nil;
 - (void)browserSoftExit
 {
      if (self.callbackId != nil) {
+         NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
+
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                                      messageAsDictionary:@{@"type":@"exit"}];
+                                                      messageAsDictionary:@{@"type":@"exit", @"url":url}];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
         self.callbackId = nil;
     }
@@ -680,14 +682,14 @@ static CDVWKInAppBrowser* instance = nil;
     self->tmpWindow.hidden = YES;
     self->tmpWindow = nil;
 
-    if (IsAtLeastiOSVersion(@"7.0")) {
-        if (_previousStatusBarStyle != -1) {
-            [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
+    // if (IsAtLeastiOSVersion(@"7.0")) {
+    //     if (_previousStatusBarStyle != -1) {
+    //         [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
             
-        }
-    }
+    //     }
+    // }
     
-    _previousStatusBarStyle = -1; // this
+    // _previousStatusBarStyle = -1; 
     // if (self.callbackId != nil) {
     //    	NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
        	
