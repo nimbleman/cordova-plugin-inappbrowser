@@ -1097,8 +1097,8 @@ BOOL isExiting = FALSE;
 - (void)softClose
 {
     [self.spinner startAnimating];
-    if ((self.navigationDelegate != nil) && [self.navigationDelegate respondsToSelector:@selector(browserSoftExit)]) {
-                [self.navigationDelegate browserSoftExit];
+    if ((self.navigationDelegate != nil) && [self.navigationDelegate respondsToSelector:@selector(browserExit)]) {
+                [self.navigationDelegate browserExit];
         }	
 }
 
