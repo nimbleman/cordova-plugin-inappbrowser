@@ -655,14 +655,15 @@ static CDVWKInAppBrowser* instance = nil;
 
 - (void)browserSoftExit
 {
-    if (self.callbackId != nil) {
-       	NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
+    [self browserExit];
+    // if (self.callbackId != nil) {
+    //    	NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
        	
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-								messageAsDictionary:@{@"type":@"exit", @"url":url}];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
-        self.callbackId = nil;
-    }
+    //     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+	// 							messageAsDictionary:@{@"type":@"exit", @"url":url}];
+    //     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+    //     self.callbackId = nil;
+    // }
 }
 
 - (void)browserExit
@@ -1097,8 +1098,8 @@ BOOL isExiting = FALSE;
 - (void)softClose
 {
     [self.spinner startAnimating];
-    if ((self.navigationDelegate != nil) && [self.navigationDelegate respondsToSelector:@selector(browserExit)]) {
-                [self.navigationDelegate browserExit];
+    if ((self.navigationDelegate != nil) && [self.navigationDelegate respondsToSelector:@selector(browserSoftExit)]) {
+                [self.navigationDelegate browserSoftExit];
         }	
 }
 
