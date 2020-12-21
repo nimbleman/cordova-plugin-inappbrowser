@@ -45,7 +45,7 @@
         self.toolbarcolor = nil;
         self.toolbartranslucent = YES;
         self.softclose = NO;
-        self.logoButtonImage = @"arrow_back_outline";
+        self.logoButtonImage = @"sous_chef_recipes_logo";
         self.beforeload = @"";
     }
 
