@@ -45,7 +45,7 @@
         self.toolbarcolor = nil;
         self.toolbartranslucent = YES;
         self.softclose = NO;
-        self.logoButtonImage = @"arrow-back-outline";
+        self.logoButtonImage = @"arrow_back_outline";
         self.beforeload = @"";
     }
 
