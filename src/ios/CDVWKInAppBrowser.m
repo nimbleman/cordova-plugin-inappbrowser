@@ -665,7 +665,6 @@ static CDVWKInAppBrowser* instance = nil;
     }
 
     self->tmpWindow.hidden = YES;
-    self->tmpWindow = nil;
 }
 
 - (void)browserExit
