@@ -830,12 +830,12 @@ BOOL isExiting = FALSE;
 
     UIImage *buttonImage = [UIImage imageNamed:_browserOptions.logoButtonImage];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.bounds = CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height);
+    button.bounds = CGRectMake(0, 0, 88, 88);
     CGFloat closeButtonWidth = buttonImage.size.width;
 	
     [button setImage:[UIImage imageNamed:_browserOptions.logoButtonImage] forState:UIControlStateHighlighted];
     [button setImage:buttonImage forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(hardClose) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
 	
     self.cancelImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
     
