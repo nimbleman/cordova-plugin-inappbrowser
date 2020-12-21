@@ -655,24 +655,25 @@ static CDVWKInAppBrowser* instance = nil;
 
 - (void)browserSoftExit
 {
-    [self browserExit];
-    // if (self.callbackId != nil) {
-    //    	NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
+    if (self.callbackId != nil) {
+       	NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
        	
-    //     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-	// 							messageAsDictionary:@{@"type":@"exit", @"url":url}];
-    //     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
-    //     self.callbackId = nil;
-    // }
+        // CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+		// 						messageAsDictionary:@{@"type":@"exit", @"url":url}];
+        // [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+        // self.callbackId = nil;
+         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                      messageAsDictionary:@{@"type":@"exit"}];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+        self.callbackId = nil;
+    }
 }
 
 - (void)browserExit
 {
     if (self.callbackId != nil) {
-        NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
-
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                                      messageAsDictionary:@{@"type":@"exit", @"url":url}];
+                                                      messageAsDictionary:@{@"type":@"exit"}];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
         self.callbackId = nil;
     }
