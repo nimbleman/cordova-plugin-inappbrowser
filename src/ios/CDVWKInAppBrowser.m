@@ -827,6 +827,17 @@ BOOL isExiting = FALSE;
     self.spinner.opaque = NO;
     self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
+
+    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.logoButtonImage];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.bounds = CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height);
+    CGFloat closeButtonWidth = buttonImage.size.width;
+	
+    [button setImage:[UIImage imageNamed:_browserOptions.logoButtonImage] forState:UIControlStateHighlighted];
+    [button setImage:buttonImage forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(hardClose) forControlEvents:UIControlEventTouchUpInside];
+	
+    self.cancelImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
     
     self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(softClose)];
     self.closeButton.enabled = YES;
@@ -916,7 +927,7 @@ BOOL isExiting = FALSE;
     } else if (_browserOptions.lefttoright) {
         [self.toolbar setItems:@[self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.closeButton]];
     } else {
-        [self.toolbar setItems:@[self.closeButton, flexibleSpaceButton, self.backButton, fixedSpaceButton, self.forwardButton]];
+        [self.toolbar setItems:@[self.cancelImageButton, self.closeButton, flexibleSpaceButton, self.backButton, fixedSpaceButton, self.forwardButton]];
     }
     
     self.view.backgroundColor = [UIColor clearColor];

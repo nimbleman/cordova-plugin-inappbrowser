@@ -44,6 +44,7 @@
 @property (nonatomic, assign) BOOL hidden;
 @property (nonatomic, assign) BOOL disallowoverscroll;
 @property (nonatomic, assign) BOOL softclose;
+@property (nonatomic) NSString* logoButtonImage;
 @property (nonatomic, copy) NSString* beforeload;
 
 + (CDVInAppBrowserOptions*)parseOptions:(NSString*)options;
