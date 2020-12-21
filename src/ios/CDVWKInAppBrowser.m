@@ -830,7 +830,7 @@ BOOL isExiting = FALSE;
 
     UIImage *buttonImage = [UIImage imageNamed:_browserOptions.logoButtonImage];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.bounds = CGRectMake(0, 0, 20, 20);
+    button.bounds = CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height);
     CGFloat closeButtonWidth = buttonImage.size.width;
 	
     [button setImage:[UIImage imageNamed:_browserOptions.logoButtonImage] forState:UIControlStateHighlighted];
