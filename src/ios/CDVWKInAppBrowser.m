@@ -659,7 +659,8 @@ static CDVWKInAppBrowser* instance = nil;
        	//NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
        	
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-								messageAsDictionary:@{@"type":@"exit", @"url":url}];
+								//messageAsDictionary:@{@"type":@"exit", @"url":url}];
+                                messageAsDictionary:@{@"type":@"exit"}];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
         self.callbackId = nil;
     }
