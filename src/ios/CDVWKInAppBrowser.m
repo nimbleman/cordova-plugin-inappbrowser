@@ -653,54 +653,22 @@ static CDVWKInAppBrowser* instance = nil;
     }
 }
 
-- (void)browserSoftExit
+- (void)browserExit
 {
-     if (self.callbackId != nil) {
-         NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
-
+    if (self.callbackId != nil) {
+       	NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
+       	
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                                      messageAsDictionary:@{@"type":@"exit", @"url":url}];
+								messageAsDictionary:@{@"type":@"exit", @"url":url}];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
         self.callbackId = nil;
     }
-    
-    [self.inAppBrowserViewController.configuration.userContentController removeScriptMessageHandlerForName:IAB_BRIDGE_NAME];
-    self.inAppBrowserViewController.configuration = nil;
-    
-    [self.inAppBrowserViewController.webView stopLoading];
-    [self.inAppBrowserViewController.webView removeFromSuperview];
-    [self.inAppBrowserViewController.webView setUIDelegate:nil];
-    [self.inAppBrowserViewController.webView setNavigationDelegate:nil];
-    self.inAppBrowserViewController.webView = nil;
-    
-    // Set navigationDelegate to nil to ensure no callbacks are received from it.
-    // self.inAppBrowserViewController.navigationDelegate = nil;
-    // self.inAppBrowserViewController = nil;
 
-    // // Set tmpWindow to hidden to make main webview responsive to touch again
-    // // Based on https://stackoverflow.com/questions/4544489/how-to-remove-a-uiwindow
-    // self->tmpWindow.hidden = YES;
-    // self->tmpWindow = nil;
-
-    // if (IsAtLeastiOSVersion(@"7.0")) {
-    //     if (_previousStatusBarStyle != -1) {
-    //         [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
-            
-    //     }
-    // }
-    
-    // _previousStatusBarStyle = -1; 
-    // if (self.callbackId != nil) {
-    //    	NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
-       	
-    //     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-	// 							messageAsDictionary:@{@"type":@"exit", @"url":url}];
-    //     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
-    //     self.callbackId = nil;
-    // }
+    self->tmpWindow.hidden = YES;
+    self->tmpWindow = nil;
 }
 
-- (void)browserExit
+- (void)browserSoftExit
 {
     if (self.callbackId != nil) {
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
