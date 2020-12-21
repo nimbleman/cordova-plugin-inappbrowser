@@ -656,11 +656,10 @@ static CDVWKInAppBrowser* instance = nil;
 - (void)browserSoftExit
 {
     if (self.callbackId != nil) {
-       	//NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
+       	NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
        	
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-								//messageAsDictionary:@{@"type":@"exit", @"url":url}];
-                                messageAsDictionary:@{@"type":@"exit"}];
+								messageAsDictionary:@{@"type":@"exit", @"url":url}];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
         self.callbackId = nil;
     }
@@ -669,8 +668,10 @@ static CDVWKInAppBrowser* instance = nil;
 - (void)browserExit
 {
     if (self.callbackId != nil) {
+        NSString* url = [self.inAppBrowserViewController.currentURL absoluteString];
+
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                                      messageAsDictionary:@{@"type":@"exit"}];
+                                                      messageAsDictionary:@{@"type":@"exit", @"url":url}];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
         self.callbackId = nil;
     }
