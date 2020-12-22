@@ -961,7 +961,7 @@ BOOL isExiting = FALSE;
     } else if (_browserOptions.lefttoright) {
         [self.toolbar setItems:@[self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.closeButton]];
     } else {
-        [self.toolbar setItems:@[self.cancelImageButton, self.logoImageButton, flexibleSpaceButton, self.backButtonImage, fixedSpaceButton, self.forwardButtonImage, fixedSpaceButton, self.saveButtonImage]];
+        [self.toolbar setItems:@[self.cancelImageButton, self.logoImageButton, flexibleSpaceButton, self.backImageButton, fixedSpaceButton, self.forwardImageButton, fixedSpaceButton, self.saveButtonImage]];
     }
     
     self.view.backgroundColor = [UIColor clearColor];
@@ -1242,8 +1242,8 @@ BOOL isExiting = FALSE;
     // loading url, start spinner, update back/forward
     
     self.addressLabel.text = NSLocalizedString(@"Loading...", nil);
-    self.backButtonImage.enabled = theWebView.canGoBack;
-    self.forwardButtonImage.enabled = theWebView.canGoForward;
+    self.backImageButton.enabled = theWebView.canGoBack;
+    self.forwardImageButton.enabled = theWebView.canGoForward;
     
     NSLog(_browserOptions.hidespinner ? @"Yes" : @"No");
     if(!_browserOptions.hidespinner) {
@@ -1272,8 +1272,8 @@ BOOL isExiting = FALSE;
     // update url, stop spinner, update back/forward
     
     self.addressLabel.text = [self.currentURL absoluteString];
-    self.backButtonImage.enabled = theWebView.canGoBack;
-    self.forwardButtonImage.enabled = theWebView.canGoForward;
+    self.backImageButton.enabled = theWebView.canGoBack;
+    self.forwardImageButton.enabled = theWebView.canGoForward;
     theWebView.scrollView.contentInset = UIEdgeInsetsZero;
     
     [self.spinner stopAnimating];
@@ -1285,8 +1285,8 @@ BOOL isExiting = FALSE;
     // log fail message, stop spinner, update back/forward
     NSLog(@"webView:%@ - %ld: %@", delegateName, (long)error.code, [error localizedDescription]);
     
-    self.backButtonImage.enabled = theWebView.canGoBack;
-    self.forwardButtonImage.enabled = theWebView.canGoForward;
+    self.backImageButton.enabled = theWebView.canGoBack;
+    self.forwardImageButton.enabled = theWebView.canGoForward;
     [self.spinner stopAnimating];
     
     self.addressLabel.text = NSLocalizedString(@"Load Error", nil);
