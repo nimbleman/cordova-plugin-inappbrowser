@@ -828,50 +828,50 @@ BOOL isExiting = FALSE;
     self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
 
-    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.cancelButtonImage];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *buttonImageCancel = [UIImage imageNamed:_browserOptions.cancelButtonImage];
+    UIButton *buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
 	
-    [button setImage:[UIImage imageNamed:_browserOptions.cancelButtonImage] forState:UIControlStateHighlighted];
-    [button setImage:buttonImage forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
+    [buttonCancel setImage:[UIImage imageNamed:_browserOptions.cancelButtonImage] forState:UIControlStateHighlighted];
+    [buttonCancel setImage:buttonImageCancel forState:UIControlStateNormal];
+    [buttonCancel addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
 	
-    self.cancelImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.cancelImageButton = [[UIBarButtonItem alloc] initWithCustomView:buttonCancel];
 
-    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.logoButtonImage];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *buttonImageLogo = [UIImage imageNamed:_browserOptions.logoButtonImage];
+    UIButton *buttonLogo = [UIButton buttonWithType:UIButtonTypeCustom];
 	
-    [button setImage:[UIImage imageNamed:_browserOptions.logoButtonImage] forState:UIControlStateHighlighted];
-    [button setImage:buttonImage forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
+    [buttonLogo setImage:[UIImage imageNamed:_browserOptions.logoButtonImage] forState:UIControlStateHighlighted];
+    [buttonLogo setImage:buttonImageLogo forState:UIControlStateNormal];
+    [buttonLogo addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
 	
-    self.logoImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.logoImageButton = [[UIBarButtonItem alloc] initWithCustomView:buttonLogo];
 
-    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.backButtonImage];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *buttonImageBack = [UIImage imageNamed:_browserOptions.backButtonImage];
+    UIButton *buttonBack = [UIButton buttonWithType:UIButtonTypeCustom];
 	
-    [button setImage:[UIImage imageNamed:_browserOptions.backButtonImage] forState:UIControlStateHighlighted];
-    [button setImage:buttonImage forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    [buttonBack setImage:[UIImage imageNamed:_browserOptions.backButtonImage] forState:UIControlStateHighlighted];
+    [buttonBack setImage:buttonImageBack forState:UIControlStateNormal];
+    [buttonBack addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
 	
-    self.backImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.backImageButton = [[UIBarButtonItem alloc] initWithCustomView:buttonBack];
 
-    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.forwardButtonImage];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *buttonImageForward = [UIImage imageNamed:_browserOptions.forwardButtonImage];
+    UIButton *buttonForward = [UIButton buttonWithType:UIButtonTypeCustom];
 	
-    [button setImage:[UIImage imageNamed:_browserOptions.forwardButtonImage] forState:UIControlStateHighlighted];
-    [button setImage:buttonImage forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
+    [buttonForward setImage:[UIImage imageNamed:_browserOptions.forwardButtonImage] forState:UIControlStateHighlighted];
+    [buttonForward setImage:buttonImageForward forState:UIControlStateNormal];
+    [buttonForward addTarget:self action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
 	
-    self.forwardImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.forwardImageButton = [[UIBarButtonItem alloc] initWithCustomView:buttonForward];
 
-    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.saveButtonImage];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *buttonImageSave = [UIImage imageNamed:_browserOptions.saveButtonImage];
+    UIButton *buttonSave = [UIButton buttonWithType:UIButtonTypeCustom];
 	
-    [button setImage:[UIImage imageNamed:_browserOptions.saveButtonImage] forState:UIControlStateHighlighted];
-    [button setImage:buttonImage forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(softClose) forControlEvents:UIControlEventTouchUpInside];
+    [buttonSave setImage:[UIImage imageNamed:_browserOptions.saveButtonImage] forState:UIControlStateHighlighted];
+    [buttonSave setImage:buttonImageSave forState:UIControlStateNormal];
+    [buttonSave addTarget:self action:@selector(softClose) forControlEvents:UIControlEventTouchUpInside];
 	
-    self.saveImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.saveImageButton = [[UIBarButtonItem alloc] initWithCustomView:buttonSave];
     
     self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(softClose)];
     self.closeButton.enabled = YES;
