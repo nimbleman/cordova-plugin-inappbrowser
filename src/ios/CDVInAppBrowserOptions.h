@@ -47,9 +47,8 @@
 @property (nonatomic) NSString* cancelButtonImage;
 @property (nonatomic) NSString* logoButtonImage;
 @property (nonatomic) NSString* backButtonImage;
-@property (nonatomic) NSString* backButtonImage;
+@property (nonatomic) NSString* forwardButtonImage;
 @property (nonatomic) NSString* saveButtonImage;
-@property (nonatomic) NSString* logoButtonImage;
 @property (nonatomic, copy) NSString* beforeload;
 
 + (CDVInAppBrowserOptions*)parseOptions:(NSString*)options;
