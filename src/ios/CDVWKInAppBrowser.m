@@ -828,12 +828,12 @@ BOOL isExiting = FALSE;
     self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
 
-    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.logoButtonImage];
+    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.closeButtonImage];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.bounds = CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height);
     CGFloat closeButtonWidth = buttonImage.size.width;
 	
-    [button setImage:[UIImage imageNamed:_browserOptions.logoButtonImage] forState:UIControlStateHighlighted];
+    [button setImage:[UIImage imageNamed:_browserOptions.closeButtonImage] forState:UIControlStateHighlighted];
     [button setImage:buttonImage forState:UIControlStateNormal];
     [button addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
 	
