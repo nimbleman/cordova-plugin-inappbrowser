@@ -59,6 +59,10 @@
 @property (nonatomic, strong) IBOutlet WKWebViewConfiguration* configuration;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* closeButton;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* cancelImageButton;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* logoImageButton;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* backImageButton;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* forwardImageButton;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* saveImageButton;
 @property (nonatomic, strong) IBOutlet UILabel* addressLabel;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* backButton;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* forwardButton;

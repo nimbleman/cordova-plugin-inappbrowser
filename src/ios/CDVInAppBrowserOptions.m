@@ -45,8 +45,11 @@
         self.toolbarcolor = nil;
         self.toolbartranslucent = YES;
         self.softclose = NO;
-        self.closeButtonImage = @"InAppBrowserClose";
+        self.cancelButtonImage = @"InAppBrowserCancel";
         self.logoButtonImage = @"InAppBrowserLogo";
+        self.backButtonImage = @"InAppBrowserBack";
+        self.forwardButtonImage = @"InAppBrowserForward";
+        self.saveButtonImage = @"InAppBrowserSave";
         self.beforeload = @"";
     }
 

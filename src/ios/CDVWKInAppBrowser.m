@@ -824,20 +824,54 @@ BOOL isExiting = FALSE;
     self.spinner.hidden = NO;
     self.spinner.hidesWhenStopped = YES;
     self.spinner.multipleTouchEnabled = NO;
-    self.spinner.opaque = NO;
+    self.spinner.opaque = YES;
     self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
 
     UIImage *buttonImage = [UIImage imageNamed:_browserOptions.closeButtonImage];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.bounds = CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height);
-    CGFloat closeButtonWidth = buttonImage.size.width;
 	
     [button setImage:[UIImage imageNamed:_browserOptions.closeButtonImage] forState:UIControlStateHighlighted];
     [button setImage:buttonImage forState:UIControlStateNormal];
     [button addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
 	
     self.cancelImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+
+    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.logoButtonImage];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+	
+    [button setImage:[UIImage imageNamed:_browserOptions.logoButtonImage] forState:UIControlStateHighlighted];
+    [button setImage:buttonImage forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
+	
+    self.logoImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+
+    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.backButtonImage];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+	
+    [button setImage:[UIImage imageNamed:_browserOptions.backButtonImage] forState:UIControlStateHighlighted];
+    [button setImage:buttonImage forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+	
+    self.backImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+
+    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.forwardButtonImage];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+	
+    [button setImage:[UIImage imageNamed:_browserOptions.forwardButtonImage] forState:UIControlStateHighlighted];
+    [button setImage:buttonImage forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
+	
+    self.forwardImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+
+    UIImage *buttonImage = [UIImage imageNamed:_browserOptions.saveButtonImage];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+	
+    [button setImage:[UIImage imageNamed:_browserOptions.saveButtonImage] forState:UIControlStateHighlighted];
+    [button setImage:buttonImage forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(softClose) forControlEvents:UIControlEventTouchUpInside];
+	
+    self.saveImageButton = [[UIBarButtonItem alloc] initWithCustomView:button];
     
     self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(softClose)];
     self.closeButton.enabled = YES;
@@ -901,21 +935,21 @@ BOOL isExiting = FALSE;
     self.addressLabel.textColor = [UIColor colorWithWhite:1.000 alpha:1.000];
     self.addressLabel.userInteractionEnabled = NO;
     
-    NSString* frontArrowString = NSLocalizedString(@"►", nil); // create arrow from Unicode char
-    self.forwardButton = [[UIBarButtonItem alloc] initWithTitle:frontArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goForward:)];
-    self.forwardButton.enabled = YES;
-    self.forwardButton.imageInsets = UIEdgeInsetsZero;
-    if (_browserOptions.navigationbuttoncolor != nil) { // Set button color if user sets it in options
-      self.forwardButton.tintColor = [self colorFromHexString:_browserOptions.navigationbuttoncolor];
-    }
+    // NSString* frontArrowString = NSLocalizedString(@"►", nil); // create arrow from Unicode char
+    // self.forwardButton = [[UIBarButtonItem alloc] initWithTitle:frontArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goForward:)];
+    // self.forwardButton.enabled = YES;
+    // self.forwardButton.imageInsets = UIEdgeInsetsZero;
+    // if (_browserOptions.navigationbuttoncolor != nil) { // Set button color if user sets it in options
+    //   self.forwardButton.tintColor = [self colorFromHexString:_browserOptions.navigationbuttoncolor];
+    // }
 
-    NSString* backArrowString = NSLocalizedString(@"◄", nil); // create arrow from Unicode char
-    self.backButton = [[UIBarButtonItem alloc] initWithTitle:backArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
-    self.backButton.enabled = YES;
-    self.backButton.imageInsets = UIEdgeInsetsZero;
-    if (_browserOptions.navigationbuttoncolor != nil) { // Set button color if user sets it in options
-      self.backButton.tintColor = [self colorFromHexString:_browserOptions.navigationbuttoncolor];
-    }
+    // NSString* backArrowString = NSLocalizedString(@"◄", nil); // create arrow from Unicode char
+    // self.backButton = [[UIBarButtonItem alloc] initWithTitle:backArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
+    // self.backButton.enabled = YES;
+    // self.backButton.imageInsets = UIEdgeInsetsZero;
+    // if (_browserOptions.navigationbuttoncolor != nil) { // Set button color if user sets it in options
+    //   self.backButton.tintColor = [self colorFromHexString:_browserOptions.navigationbuttoncolor];
+    // }
 
     // Filter out Navigation Buttons if user requests so
     if (_browserOptions.hidenavigationbuttons) {
@@ -927,7 +961,7 @@ BOOL isExiting = FALSE;
     } else if (_browserOptions.lefttoright) {
         [self.toolbar setItems:@[self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.closeButton]];
     } else {
-        [self.toolbar setItems:@[self.cancelImageButton, self.closeButton, flexibleSpaceButton, self.backButton, fixedSpaceButton, self.forwardButton]];
+        [self.toolbar setItems:@[self.cancelImageButton, self.logoImageButton, flexibleSpaceButton, self.backButtonImage, fixedSpaceButton, self.forwardButtonImage, fixedSpaceButton, self.saveButtonImage]];
     }
     
     self.view.backgroundColor = [UIColor clearColor];
@@ -1208,8 +1242,8 @@ BOOL isExiting = FALSE;
     // loading url, start spinner, update back/forward
     
     self.addressLabel.text = NSLocalizedString(@"Loading...", nil);
-    self.backButton.enabled = theWebView.canGoBack;
-    self.forwardButton.enabled = theWebView.canGoForward;
+    self.backButtonImage.enabled = theWebView.canGoBack;
+    self.forwardButtonImage.enabled = theWebView.canGoForward;
     
     NSLog(_browserOptions.hidespinner ? @"Yes" : @"No");
     if(!_browserOptions.hidespinner) {
@@ -1238,8 +1272,8 @@ BOOL isExiting = FALSE;
     // update url, stop spinner, update back/forward
     
     self.addressLabel.text = [self.currentURL absoluteString];
-    self.backButton.enabled = theWebView.canGoBack;
-    self.forwardButton.enabled = theWebView.canGoForward;
+    self.backButtonImage.enabled = theWebView.canGoBack;
+    self.forwardButtonImage.enabled = theWebView.canGoForward;
     theWebView.scrollView.contentInset = UIEdgeInsetsZero;
     
     [self.spinner stopAnimating];
@@ -1251,8 +1285,8 @@ BOOL isExiting = FALSE;
     // log fail message, stop spinner, update back/forward
     NSLog(@"webView:%@ - %ld: %@", delegateName, (long)error.code, [error localizedDescription]);
     
-    self.backButton.enabled = theWebView.canGoBack;
-    self.forwardButton.enabled = theWebView.canGoForward;
+    self.backButtonImage.enabled = theWebView.canGoBack;
+    self.forwardButtonImage.enabled = theWebView.canGoForward;
     [self.spinner stopAnimating];
     
     self.addressLabel.text = NSLocalizedString(@"Load Error", nil);
