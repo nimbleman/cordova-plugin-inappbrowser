@@ -1177,12 +1177,12 @@ BOOL isExiting = FALSE;
     }
 }
 
-- (void)goBack:()
+- (void)goBack
 {
     [self.webView goBack];
 }
 
-- (void)goForward:()
+- (void)goForward
 {
     [self.webView goForward];
 }
