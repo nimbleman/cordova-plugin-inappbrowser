@@ -961,7 +961,7 @@ BOOL isExiting = FALSE;
     } else if (_browserOptions.lefttoright) {
         [self.toolbar setItems:@[self.backButton, fixedSpaceButton, self.forwardButton, flexibleSpaceButton, self.closeButton]];
     } else {
-        [self.toolbar setItems:@[self.cancelImageButton, self.logoImageButton, flexibleSpaceButton, self.backImageButton, fixedSpaceButton, self.forwardImageButton, fixedSpaceButton, self.saveImageButton]];
+        [self.toolbar setItems:@[self.cancelImageButton, fixedSpaceButton, self.logoImageButton, flexibleSpaceButton, self.backImageButton, fixedSpaceButton, self.forwardImageButton, fixedSpaceButton, self.saveImageButton]];
     }
     
     self.view.backgroundColor = [UIColor clearColor];
