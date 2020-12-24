@@ -1261,10 +1261,8 @@ BOOL isExiting = FALSE;
     BOOL isTopLevelNavigation = [url isEqual:mainDocumentURL];
     
     if (isTopLevelNavigation) {
-        
+        self.currentURL = url;
     }
-
-    self.currentURL = theWebView.URL;
     
     [self.navigationDelegate webView:theWebView decidePolicyForNavigationAction:navigationAction decisionHandler:decisionHandler];
 }
