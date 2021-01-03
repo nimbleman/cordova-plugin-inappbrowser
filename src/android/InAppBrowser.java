@@ -65,6 +65,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.app.ProgressDialog;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.Config;
@@ -105,6 +106,7 @@ public class InAppBrowser extends CordovaPlugin {
     private static final String CLEAR_ALL_CACHE = "clearcache";
     private static final String CLEAR_SESSION_CACHE = "clearsessioncache";
     private static final String HARDWARE_BACK_BUTTON = "hardwareback";
+    private static final String SOFT_CLOSE = "softclose";
     private static final String MEDIA_PLAYBACK_REQUIRES_USER_ACTION = "mediaPlaybackRequiresUserAction";
     private static final String SHOULD_PAUSE = "shouldPauseOnSuspend";
     private static final Boolean DEFAULT_HARDWARE_BACK = true;
@@ -133,6 +135,7 @@ public class InAppBrowser extends CordovaPlugin {
     private boolean clearAllCache = false;
     private boolean clearSessionCache = false;
     private boolean hadwareBackButton = true;
+    private boolean softClose = false;
     private boolean mediaPlaybackRequiresUserGesture = false;
     private boolean shouldPauseInAppBrowser = false;
     private boolean useWideViewPort = true;
@@ -484,6 +487,52 @@ public class InAppBrowser extends CordovaPlugin {
         }
     }
 
+       public void softCloseDialog() {
+              if(this.softClose) {
+                     progressDialog = new ProgressDialog(this.cordova.getActivity());
+                     progressDialog.show();
+                        try {
+                           JSONObject obj = new JSONObject();
+                           obj.put("type", EXIT_EVENT);
+                           obj.put("url",  this.inAppWebView.getUrl());
+                           sendUpdate(obj, false);
+                       } catch (JSONException ex) {
+                           LOG.d(LOG_TAG, "Should never happen");
+                       }
+                 }
+                 else {
+                     closeDialog();       
+                 }
+       }
+	
+	public void hardCloseDialog() {
+             this.cordova.getActivity().runOnUiThread(new Runnable() {
+                          @Override
+                          public void run() {
+                              final WebView childView = inAppWebView;
+                              // The JS protects against multiple calls, so this should happen only when
+                              // closeDialog() is called by other native code.
+                              if (childView == null) {
+                                  return;
+                              }
+              
+                              childView.setWebViewClient(new WebViewClient() {
+                                  // NB: wait for about:blank before dismissing
+                                  public void onPageFinished(WebView view, String url) {
+                                      if (dialog != null) {
+                                          dialog.dismiss();
+                                          dialog = null;
+                                      }
+                                  }
+                              });
+                              // NB: From SDK 19: "If you call methods on WebView from any thread
+                              // other than your app's UI thread, it can cause unexpected results."
+                              // http://developer.android.com/guide/webapps/migrating.html#Threads
+                              childView.loadUrl("about:blank");                                                                     
+                          }
+                      });
+       }
+	
     /**
      * Opens the intent, providing a chooser that excludes the current app to avoid
      * circular loops.
@@ -528,39 +577,72 @@ public class InAppBrowser extends CordovaPlugin {
      * Closes the dialog
      */
     public void closeDialog() {
-        this.cordova.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                final WebView childView = inAppWebView;
-                // The JS protects against multiple calls, so this should happen only when
-                // closeDialog() is called by other native code.
-                if (childView == null) {
-                    return;
-                }
-
-                childView.setWebViewClient(new WebViewClient() {
-                    // NB: wait for about:blank before dismissing
-                    public void onPageFinished(WebView view, String url) {
-                        if (dialog != null && !cordova.getActivity().isFinishing()) {
-                            dialog.dismiss();
-                            dialog = null;
-                        }
+            if(this.softClose == false) {
+                      this.cordova.getActivity().runOnUiThread(new Runnable() {
+                          @Override
+                          public void run() {
+                              final WebView childView = inAppWebView;
+                              // The JS protects against multiple calls, so this should happen only when
+                              // closeDialog() is called by other native code.
+                              if (childView == null) {
+                                  return;
+                              }
+              
+                              childView.setWebViewClient(new WebViewClient() {
+                                  // NB: wait for about:blank before dismissing
+                                  public void onPageFinished(WebView view, String url) {
+                                      if (dialog != null) {
+                                          dialog.dismiss();
+                                          dialog = null;
+                                      }
+                                  }
+                              });
+                              // NB: From SDK 19: "If you call methods on WebView from any thread
+                              // other than your app's UI thread, it can cause unexpected results."
+                              // http://developer.android.com/guide/webapps/migrating.html#Threads
+                              childView.loadUrl("about:blank");
+              
+                           
+                                try {
+                                  JSONObject obj = new JSONObject();
+                                  obj.put("type", EXIT_EVENT);
+                                  sendUpdate(obj, false);
+                              } catch (JSONException ex) {
+                                  LOG.d(LOG_TAG, "Should never happen");
+                              }  
+                          }
+                      });
+              }
+              else {
+                     if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
                     }
-                });
-                // NB: From SDK 19: "If you call methods on WebView from any thread
-                // other than your app's UI thread, it can cause unexpected results."
-                // http://developer.android.com/guide/webapps/migrating.html#Threads
-                childView.loadUrl("about:blank");
-
-                try {
-                    JSONObject obj = new JSONObject();
-                    obj.put("type", EXIT_EVENT);
-                    sendUpdate(obj, false);
-                } catch (JSONException ex) {
-                    LOG.d(LOG_TAG, "Should never happen");
-                }
-            }
-        });
+                     this.cordova.getActivity().runOnUiThread(new Runnable() {
+                          @Override
+                          public void run() {
+                              final WebView childView = inAppWebView;
+                              // The JS protects against multiple calls, so this should happen only when
+                              // closeDialog() is called by other native code.
+                              if (childView == null) {
+                                  return;
+                              }
+              
+                              childView.setWebViewClient(new WebViewClient() {
+                                  // NB: wait for about:blank before dismissing
+                                  public void onPageFinished(WebView view, String url) {
+                                      if (dialog != null) {
+                                          dialog.dismiss();
+                                          dialog = null;
+                                      }
+                                  }
+                              });
+                              // NB: From SDK 19: "If you call methods on WebView from any thread
+                              // other than your app's UI thread, it can cause unexpected results."
+                              // http://developer.android.com/guide/webapps/migrating.html#Threads
+                              childView.loadUrl("about:blank");
+                          }
+                      });
+              }
     }
 
     /**
@@ -622,6 +704,10 @@ public class InAppBrowser extends CordovaPlugin {
      */
     private boolean getShowLocationBar() {
         return this.showLocationBar;
+    }
+    
+    private boolean getSoftClose() {
+           return this.softClose;
     }
 
     private InAppBrowser getInAppBrowser() {
@@ -695,6 +781,10 @@ public class InAppBrowser extends CordovaPlugin {
             if (closeButtonColorSet != null) {
                 closeButtonColor = closeButtonColorSet;
             }
+            String soft = features.get(SOFT_CLOSE);
+            if(soft != null) {
+                this.softClose = soft.equals("yes") ? true : false;
+	    }
             String leftToRightSet = features.get(LEFT_TO_RIGHT);
             leftToRight = leftToRightSet != null && leftToRightSet.equals("yes");
 
@@ -782,7 +872,39 @@ public class InAppBrowser extends CordovaPlugin {
                 _close.setId(Integer.valueOf(id));
                 _close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        closeDialog();
+                        softCloseDialog();
+                    }
+                });
+
+                return _close;
+            }
+		
+	    private View createCancelButton(int id){
+                View _close;
+                Resources activityRes = cordova.getActivity().getResources();
+
+                TextView close = new TextView(cordova.getActivity());
+                    close.setText("CANCEL");
+                    close.setTextSize(20);
+                    close.setTextColor(android.graphics.Color.parseColor("#999999"));
+                    close.setGravity(android.view.Gravity.CENTER_VERTICAL);
+                    close.setPadding(this.dpToPixels(5), 0, this.dpToPixels(75), 0);
+                    _close = close;
+
+                RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                _close.setLayoutParams(closeLayoutParams);
+
+                if (Build.VERSION.SDK_INT >= 16)
+                    _close.setBackground(null);
+                else
+                    _close.setBackgroundDrawable(null);
+
+                _close.setContentDescription("CANCEL");
+                _close.setId(Integer.valueOf(id));
+                _close.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        hardCloseDialog();
                     }
                 });
 
@@ -932,7 +1054,39 @@ public class InAppBrowser extends CordovaPlugin {
                 footer.setHorizontalGravity(Gravity.LEFT);
                 footer.setVerticalGravity(Gravity.BOTTOM);
 
-                View footerClose = createCloseButton(7);
+                
+		if(softClose) {
+                    ImageButton logo = new ImageButton(cordova.getActivity());
+                RelativeLayout.LayoutParams logoLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+		logoLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                logo.setLayoutParams(logoLayoutParams);
+                logo.setContentDescription("Sous Chef Recipes");
+                logo.setId(Integer.valueOf(31));
+                int logoResId = activityRes.getIdentifier("sous_chef_recipes_logo", "drawable", cordova.getActivity().getPackageName());
+                Drawable logoIcon = activityRes.getDrawable(logoResId);
+                if (navigationButtonColor != "") logo.setColorFilter(android.graphics.Color.parseColor(navigationButtonColor));
+                if (Build.VERSION.SDK_INT >= 16)
+                    logo.setBackground(null);
+                else
+                    logo.setBackgroundDrawable(null);
+                logo.setImageDrawable(logoIcon);
+		logo.setPadding(this.dpToPixels(5), 0, this.dpToPixels(150), 0);
+                //logo.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
+                if (Build.VERSION.SDK_INT >= 16)
+                    logo.getAdjustViewBounds();
+
+                logo.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        hardCloseDialog();
+                    }
+		});
+			
+		    footer.addView(logo);
+			
+		  View footerCancel = createCancelButton(9);
+		  footer.addView(footerCancel);
+		}
+		View footerClose = createCloseButton(7);
                 footer.addView(footerClose);
 
 
