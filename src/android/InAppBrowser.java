@@ -150,6 +150,7 @@ public class InAppBrowser extends CordovaPlugin {
     private boolean hideNavigationButtons = false;
     private String navigationButtonColor = "";
     private boolean hideUrlBar = false;
+    private ProgressDialog progressDialog;
     private boolean showFooter = false;
     private String footerColor = "";
     private String beforeload = "";
