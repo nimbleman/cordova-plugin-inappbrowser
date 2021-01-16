@@ -69,6 +69,17 @@
         <resource-file src="src/android/res/drawable-mdpi/sous_chef_recipes_logo.png" target="res/drawable-mdpi/sous_chef_recipes_logo.png" />
         <resource-file src="src/android/res/drawable-xhdpi/sous_chef_recipes_logo.png" target="res/drawable-xhdpi/sous_chef_recipes_logo.png" />
         <resource-file src="src/android/res/drawable-xxhdpi/sous_chef_recipes_logo.png" target="res/drawable-xxhdpi/sous_chef_recipes_logo.png" />
+	
+	<resource-file src="src/android/res/drawable-hdpi/ic_action_save.png" target="res/drawable-hdpi/ic_action_save.png" />
+        <resource-file src="src/android/res/drawable-mdpi/ic_action_save.png" target="res/drawable-mdpi/ic_action_save.png" />
+        <resource-file src="src/android/res/drawable-xhdpi/ic_action_save.png" target="res/drawable-xhdpi/ic_action_save.png" />
+        <resource-file src="src/android/res/drawable-xxhdpi/ic_action_save.png" target="res/drawable-xxhdpi/ic_action_save.png" />
+
+	<resource-file src="src/android/res/drawable-hdpi/ic_action_back.png" target="res/drawable-hdpi/ic_action_back.png" />
+        <resource-file src="src/android/res/drawable-mdpi/ic_action_back.png" target="res/drawable-mdpi/ic_action_back.png" />
+        <resource-file src="src/android/res/drawable-xhdpi/ic_action_back.png" target="res/drawable-xhdpi/ic_action_back.png" />
+        <resource-file src="src/android/res/drawable-xxhdpi/ic_action_back.png" target="res/drawable-xxhdpi/ic_action_back.png" />
+
     </platform>
 
     <!-- ios -->
