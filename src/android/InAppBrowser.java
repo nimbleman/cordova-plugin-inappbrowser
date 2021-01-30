@@ -848,7 +848,7 @@ public class InAppBrowser extends CordovaPlugin {
                 }
                 else {
                     ImageButton close = new ImageButton(cordova.getActivity());
-                    int closeResId = activityRes.getIdentifier("ic_action_back", "drawable", cordova.getActivity().getPackageName());
+                    int closeResId = activityRes.getIdentifier("ic_action_save", "drawable", cordova.getActivity().getPackageName());
                     Drawable closeIcon = activityRes.getDrawable(closeResId);
                     if (closeButtonColor != "") close.setColorFilter(android.graphics.Color.parseColor(closeButtonColor));
                     close.setImageDrawable(closeIcon);
@@ -879,8 +879,56 @@ public class InAppBrowser extends CordovaPlugin {
 
                 return _close;
             }
+
+		private View createCanceleButton(int id) {
+                View _cancel;
+                Resources activityRes = cordova.getActivity().getResources();
+
+                /*if (closeButtonCaption != "") {
+                    // Use TextView for text
+                    TextView close = new TextView(cordova.getActivity());
+                    close.setText(closeButtonCaption);
+                    close.setTextSize(20);
+                    if (closeButtonColor != "") close.setTextColor(android.graphics.Color.parseColor(closeButtonColor));
+                    close.setGravity(android.view.Gravity.CENTER_VERTICAL);
+                    close.setPadding(this.dpToPixels(10), 0, this.dpToPixels(10), 0);
+                    _close = close;
+                }
+                else*/ {
+                    ImageButton cancel = new ImageButton(cordova.getActivity());
+                    int cancelResId = activityRes.getIdentifier("ic_action_back", "drawable", cordova.getActivity().getPackageName());
+                    Drawable closeIcon = activityRes.getDrawable(cancelResId);
+                    //if (closeButtonColor != "") close.setColorFilter(android.graphics.Color.parseColor(closeButtonColor));
+                    cancel.setImageDrawable(cancelIcon);
+                    cancel.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    if (Build.VERSION.SDK_INT >= 16)
+                        cancel.getAdjustViewBounds();
+
+                    _cancel = cancel;
+                }
+
+                RelativeLayout.LayoutParams cancelLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                if (leftToRight) cancelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                else cancelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                _cancel.setLayoutParams(cancelLayoutParams);
+
+                if (Build.VERSION.SDK_INT >= 16)
+                    _cancel.setBackground(null);
+                else
+                    _cancel.setBackgroundDrawable(null);
+
+                _cancel.setContentDescription("Cancel Button");
+                _cancel.setId(Integer.valueOf(id));
+                _cancel.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        hardCloseDialog();
+                    }
+                });
+
+                return _cancel;
+            }
 		
-	    private View createCancelButton(int id){
+	    /*private View createCancelButton(int id){
                 View _close;
                 Resources activityRes = cordova.getActivity().getResources();
 
@@ -910,7 +958,7 @@ public class InAppBrowser extends CordovaPlugin {
                 });
 
                 return _close;
-            }
+            }*/
 
             @SuppressLint("NewApi")
             public void run() {
@@ -1055,6 +1103,8 @@ public class InAppBrowser extends CordovaPlugin {
                 footer.setHorizontalGravity(Gravity.LEFT);
                 footer.setVerticalGravity(Gravity.BOTTOM);
 
+		  		View footerCancel = createCancelButton(9);
+		  		footer.addView(footerCancel);
                 
 		if(softClose) {
                     ImageButton logo = new ImageButton(cordova.getActivity());
@@ -1083,9 +1133,6 @@ public class InAppBrowser extends CordovaPlugin {
 		});
 			
 		    footer.addView(logo);
-			
-		  View footerCancel = createCancelButton(9);
-		  footer.addView(footerCancel);
 		}
 		View footerClose = createCloseButton(7);
                 footer.addView(footerClose);
