@@ -880,7 +880,7 @@ public class InAppBrowser extends CordovaPlugin {
                 return _close;
             }
 
-		private View createCanceleButton(int id) {
+		private View createCancelButton(int id) {
                 View _cancel;
                 Resources activityRes = cordova.getActivity().getResources();
 
