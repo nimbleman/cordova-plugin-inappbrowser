@@ -897,7 +897,7 @@ public class InAppBrowser extends CordovaPlugin {
                 else*/ {
                     ImageButton cancel = new ImageButton(cordova.getActivity());
                     int cancelResId = activityRes.getIdentifier("ic_action_back", "drawable", cordova.getActivity().getPackageName());
-                    Drawable closeIcon = activityRes.getDrawable(cancelResId);
+                    Drawable cancelIcon = activityRes.getDrawable(cancelResId);
                     //if (closeButtonColor != "") close.setColorFilter(android.graphics.Color.parseColor(closeButtonColor));
                     cancel.setImageDrawable(cancelIcon);
                     cancel.setScaleType(ImageView.ScaleType.FIT_CENTER);
