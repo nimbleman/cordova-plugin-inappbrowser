@@ -861,7 +861,7 @@ public class InAppBrowser extends CordovaPlugin {
 
                 RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
                 if (leftToRight) closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                else closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                else closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 _close.setLayoutParams(closeLayoutParams);
 
                 if (Build.VERSION.SDK_INT >= 16)
@@ -869,7 +869,7 @@ public class InAppBrowser extends CordovaPlugin {
                 else
                     _close.setBackgroundDrawable(null);
 
-                _close.setContentDescription("Close Button");
+                _close.setContentDescription("Save Button");
                 _close.setId(Integer.valueOf(id));
                 _close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
