@@ -1103,8 +1103,6 @@ public class InAppBrowser extends CordovaPlugin {
                 footer.setHorizontalGravity(Gravity.LEFT);
                 footer.setVerticalGravity(Gravity.BOTTOM);
 
-		  		View footerCancel = createCancelButton(9);
-		  		footer.addView(footerCancel);
                 
 		if(softClose) {
                     ImageButton logo = new ImageButton(cordova.getActivity());
@@ -1133,6 +1131,9 @@ public class InAppBrowser extends CordovaPlugin {
 		});
 			
 		    footer.addView(logo);
+			
+			View footerCancel = createCancelButton(9);
+		  	footer.addView(footerCancel);
 		}
 		View footerClose = createCloseButton(7);
                 footer.addView(footerClose);
