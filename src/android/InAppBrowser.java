@@ -861,7 +861,7 @@ public class InAppBrowser extends CordovaPlugin {
 
                 RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
                 if (leftToRight) closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                else closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                else closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 _close.setLayoutParams(closeLayoutParams);
 
                 if (Build.VERSION.SDK_INT >= 16)
@@ -909,7 +909,7 @@ public class InAppBrowser extends CordovaPlugin {
 
                 RelativeLayout.LayoutParams cancelLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
                 if (leftToRight) cancelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                else cancelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                else cancelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 _cancel.setLayoutParams(cancelLayoutParams);
 
                 if (Build.VERSION.SDK_INT >= 16)
@@ -1109,7 +1109,7 @@ public class InAppBrowser extends CordovaPlugin {
 		if(softClose) {
                     ImageButton logo = new ImageButton(cordova.getActivity());
                 RelativeLayout.LayoutParams logoLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-		logoLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		logoLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 logo.setLayoutParams(logoLayoutParams);
                 logo.setContentDescription("Sous Chef Recipes");
                 logo.setId(Integer.valueOf(31));
@@ -1121,7 +1121,7 @@ public class InAppBrowser extends CordovaPlugin {
                 else
                     logo.setBackgroundDrawable(null);
                 logo.setImageDrawable(logoIcon);
-		//logo.setPadding(this.dpToPixels(5), 0, this.dpToPixels(150), 0);
+				logo.setPadding(this.dpToPixels(50), 0, this.dpToPixels(10), 0);
                 //logo.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
                 if (Build.VERSION.SDK_INT >= 16)
                     logo.getAdjustViewBounds();
