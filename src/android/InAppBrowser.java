@@ -1020,9 +1020,9 @@ public class InAppBrowser extends CordovaPlugin {
                     back.setBackground(null);
                 else
                     back.setBackgroundDrawable(null);
-                back.setImageDrawable(backIcon);
+                back.setIfootercolorgeDrawable(backIcon);
                 back.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                back.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
+                back.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(50));
                 if (Build.VERSION.SDK_INT >= 16)
                     back.getAdjustViewBounds();
 
@@ -1093,7 +1093,7 @@ public class InAppBrowser extends CordovaPlugin {
                 if(footerColor != "") {
                     _footerColor = Color.parseColor(footerColor);
                 } else {
-                    _footerColor = android.graphics.Color.LTGRAY;
+                    _footerColor = android.graphics.Color.WHITE;
                 }
                 footer.setBackgroundColor(_footerColor);
                 RelativeLayout.LayoutParams footerLayout = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(44));
