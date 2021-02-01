@@ -1020,7 +1020,7 @@ public class InAppBrowser extends CordovaPlugin {
                     back.setBackground(null);
                 else
                     back.setBackgroundDrawable(null);
-                back.setIfootercolorgeDrawable(backIcon);
+                back.setImageDrawable(backIcon);
                 back.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 back.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(50));
                 if (Build.VERSION.SDK_INT >= 16)
