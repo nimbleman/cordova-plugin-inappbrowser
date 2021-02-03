@@ -1022,7 +1022,7 @@ public class InAppBrowser extends CordovaPlugin {
                     back.setBackgroundDrawable(null);
                 back.setImageDrawable(backIcon);
                 back.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                back.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
+                back.setPadding(0, this.dpToPixels(-10), 0, this.dpToPixels(10));
                 if (Build.VERSION.SDK_INT >= 16)
                     back.getAdjustViewBounds();
 
@@ -1275,7 +1275,7 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Don't add the footer unless it's been enabled
                 if (showFooter) {
-                    main.addView(footer);
+                    webViewLayout.addView(footer);
                 }
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
