@@ -1048,7 +1048,7 @@ public class InAppBrowser extends CordovaPlugin {
                     forward.setBackgroundDrawable(null);
                 forward.setImageDrawable(fwdIcon);
                 forward.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                forward.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(20));
+                forward.setPadding(0, this.dpToPixels(10), this.dpToPixels(50), this.dpToPixels(10));
                 if (Build.VERSION.SDK_INT >= 16)
                     forward.getAdjustViewBounds();
 
@@ -1263,10 +1263,10 @@ public class InAppBrowser extends CordovaPlugin {
                 if (!hideUrlBar) toolbar.addView(edittext);
 
                 // Don't add the toolbar if its been disabled
-                //if (getShowLocationBar()) {
+                if (getShowLocationBar()) {
                     // Add our toolbar to our main view/layout
-                    main.addView(toolbar);
-                //}
+                    //main.addView(toolbar);
+                }
 
                 // Add our webview to our main view/layout
                 RelativeLayout webViewLayout = new RelativeLayout(cordova.getActivity());
