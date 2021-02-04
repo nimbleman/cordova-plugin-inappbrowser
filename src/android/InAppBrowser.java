@@ -1267,17 +1267,18 @@ public class InAppBrowser extends CordovaPlugin {
                     // Add our toolbar to our main view/layout
                     //main.addView(toolbar);
                 }
-				
-				 // Don't add the footer unless it's been enabled
-                if (showFooter) {
-                    webViewLayout.addView(footer);
-                }
 
                 // Add our webview to our main view/layout
                 RelativeLayout webViewLayout = new RelativeLayout(cordova.getActivity());
+				
+				// Don't add the footer unless it's been enabled
+                if (showFooter) {
+                    webViewLayout.addView(footer);
+                }
+				
                 webViewLayout.addView(inAppWebView);
                 main.addView(webViewLayout);
-				
+
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 lp.copyFrom(dialog.getWindow().getAttributes());
                 lp.width = WindowManager.LayoutParams.MATCH_PARENT;
