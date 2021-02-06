@@ -1083,9 +1083,9 @@ public class InAppBrowser extends CordovaPlugin {
 
 
                 // Header Close/Done button
-                /*int closeButtonId = leftToRight ? 1 : 5;
+                int closeButtonId = leftToRight ? 1 : 5;
                 View close = createCloseButton(closeButtonId);
-                toolbar.addView(close);*/
+                toolbar.addView(close);
 
                 // Footer
                 RelativeLayout footer = new RelativeLayout(cordova.getActivity());
@@ -1134,8 +1134,8 @@ public class InAppBrowser extends CordovaPlugin {
 			
 		    toolbar.addView(logo);
 		}
-		View footerClose = createCloseButton(7);
-                toolbar.addView(footerClose);
+		//View footerClose = createCloseButton(7);
+                //toolbar.addView(footerClose);
 
 
                 // WebView
