@@ -20,7 +20,6 @@ package org.apache.cordova.inappbrowser;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,8 +29,6 @@ import android.provider.Browser;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Color;
 import android.net.http.SslError;
 import android.net.Uri;
@@ -48,7 +45,6 @@ import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.HttpAuthHandler;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
@@ -65,7 +61,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.app.ProgressDialog;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.Config;
@@ -106,7 +101,6 @@ public class InAppBrowser extends CordovaPlugin {
     private static final String CLEAR_ALL_CACHE = "clearcache";
     private static final String CLEAR_SESSION_CACHE = "clearsessioncache";
     private static final String HARDWARE_BACK_BUTTON = "hardwareback";
-    private static final String SOFT_CLOSE = "softclose";
     private static final String MEDIA_PLAYBACK_REQUIRES_USER_ACTION = "mediaPlaybackRequiresUserAction";
     private static final String SHOULD_PAUSE = "shouldPauseOnSuspend";
     private static final Boolean DEFAULT_HARDWARE_BACK = true;
@@ -135,14 +129,11 @@ public class InAppBrowser extends CordovaPlugin {
     private boolean clearAllCache = false;
     private boolean clearSessionCache = false;
     private boolean hadwareBackButton = true;
-    private boolean softClose = false;
     private boolean mediaPlaybackRequiresUserGesture = false;
     private boolean shouldPauseInAppBrowser = false;
     private boolean useWideViewPort = true;
-    private ValueCallback<Uri> mUploadCallback;
-    private ValueCallback<Uri[]> mUploadCallbackLollipop;
+    private ValueCallback<Uri[]> mUploadCallback;
     private final static int FILECHOOSER_REQUESTCODE = 1;
-    private final static int FILECHOOSER_REQUESTCODE_LOLLIPOP = 2;
     private String closeButtonCaption = "";
     private String closeButtonColor = "";
     private boolean leftToRight = false;
@@ -150,7 +141,6 @@ public class InAppBrowser extends CordovaPlugin {
     private boolean hideNavigationButtons = false;
     private String navigationButtonColor = "";
     private boolean hideUrlBar = false;
-    private ProgressDialog progressDialog;
     private boolean showFooter = false;
     private String footerColor = "";
     private String beforeload = "";
@@ -418,12 +408,7 @@ public class InAppBrowser extends CordovaPlugin {
                 @SuppressLint("NewApi")
                 @Override
                 public void run() {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                        // This action will have the side-effect of blurring the currently focused element
-                        inAppWebView.loadUrl("javascript:" + finalScriptToInject);
-                    } else {
-                        inAppWebView.evaluateJavascript(finalScriptToInject, null);
-                    }
+                    inAppWebView.evaluateJavascript(finalScriptToInject, null);
                 }
             });
         } else {
@@ -488,52 +473,6 @@ public class InAppBrowser extends CordovaPlugin {
         }
     }
 
-       public void softCloseDialog() {
-              if(this.softClose) {
-                     progressDialog = new ProgressDialog(this.cordova.getActivity());
-                     progressDialog.show();
-                        try {
-                           JSONObject obj = new JSONObject();
-                           obj.put("type", EXIT_EVENT);
-                           obj.put("url",  this.inAppWebView.getUrl());
-                           sendUpdate(obj, false);
-                       } catch (JSONException ex) {
-                           LOG.d(LOG_TAG, "Should never happen");
-                       }
-                 }
-                 else {
-                     closeDialog();       
-                 }
-       }
-	
-	public void hardCloseDialog() {
-             this.cordova.getActivity().runOnUiThread(new Runnable() {
-                          @Override
-                          public void run() {
-                              final WebView childView = inAppWebView;
-                              // The JS protects against multiple calls, so this should happen only when
-                              // closeDialog() is called by other native code.
-                              if (childView == null) {
-                                  return;
-                              }
-              
-                              childView.setWebViewClient(new WebViewClient() {
-                                  // NB: wait for about:blank before dismissing
-                                  public void onPageFinished(WebView view, String url) {
-                                      if (dialog != null) {
-                                          dialog.dismiss();
-                                          dialog = null;
-                                      }
-                                  }
-                              });
-                              // NB: From SDK 19: "If you call methods on WebView from any thread
-                              // other than your app's UI thread, it can cause unexpected results."
-                              // http://developer.android.com/guide/webapps/migrating.html#Threads
-                              childView.loadUrl("about:blank");                                                                     
-                          }
-                      });
-       }
-	
     /**
      * Opens the intent, providing a chooser that excludes the current app to avoid
      * circular loops.
@@ -578,72 +517,39 @@ public class InAppBrowser extends CordovaPlugin {
      * Closes the dialog
      */
     public void closeDialog() {
-            if(this.softClose == false) {
-                      this.cordova.getActivity().runOnUiThread(new Runnable() {
-                          @Override
-                          public void run() {
-                              final WebView childView = inAppWebView;
-                              // The JS protects against multiple calls, so this should happen only when
-                              // closeDialog() is called by other native code.
-                              if (childView == null) {
-                                  return;
-                              }
-              
-                              childView.setWebViewClient(new WebViewClient() {
-                                  // NB: wait for about:blank before dismissing
-                                  public void onPageFinished(WebView view, String url) {
-                                      if (dialog != null) {
-                                          dialog.dismiss();
-                                          dialog = null;
-                                      }
-                                  }
-                              });
-                              // NB: From SDK 19: "If you call methods on WebView from any thread
-                              // other than your app's UI thread, it can cause unexpected results."
-                              // http://developer.android.com/guide/webapps/migrating.html#Threads
-                              childView.loadUrl("about:blank");
-              
-                           
-                                try {
-                                  JSONObject obj = new JSONObject();
-                                  obj.put("type", EXIT_EVENT);
-                                  sendUpdate(obj, false);
-                              } catch (JSONException ex) {
-                                  LOG.d(LOG_TAG, "Should never happen");
-                              }  
-                          }
-                      });
-              }
-              else {
-                     if (progressDialog != null && progressDialog.isShowing()) {
-                        progressDialog.dismiss();
+        this.cordova.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final WebView childView = inAppWebView;
+                // The JS protects against multiple calls, so this should happen only when
+                // closeDialog() is called by other native code.
+                if (childView == null) {
+                    return;
+                }
+
+                childView.setWebViewClient(new WebViewClient() {
+                    // NB: wait for about:blank before dismissing
+                    public void onPageFinished(WebView view, String url) {
+                        if (dialog != null && !cordova.getActivity().isFinishing()) {
+                            dialog.dismiss();
+                            dialog = null;
+                        }
                     }
-                     this.cordova.getActivity().runOnUiThread(new Runnable() {
-                          @Override
-                          public void run() {
-                              final WebView childView = inAppWebView;
-                              // The JS protects against multiple calls, so this should happen only when
-                              // closeDialog() is called by other native code.
-                              if (childView == null) {
-                                  return;
-                              }
-              
-                              childView.setWebViewClient(new WebViewClient() {
-                                  // NB: wait for about:blank before dismissing
-                                  public void onPageFinished(WebView view, String url) {
-                                      if (dialog != null) {
-                                          dialog.dismiss();
-                                          dialog = null;
-                                      }
-                                  }
-                              });
-                              // NB: From SDK 19: "If you call methods on WebView from any thread
-                              // other than your app's UI thread, it can cause unexpected results."
-                              // http://developer.android.com/guide/webapps/migrating.html#Threads
-                              childView.loadUrl("about:blank");
-                          }
-                      });
-              }
+                });
+                // NB: From SDK 19: "If you call methods on WebView from any thread
+                // other than your app's UI thread, it can cause unexpected results."
+                // http://developer.android.com/guide/webapps/migrating.html#Threads
+                childView.loadUrl("about:blank");
+
+                try {
+                    JSONObject obj = new JSONObject();
+                    obj.put("type", EXIT_EVENT);
+                    sendUpdate(obj, false);
+                } catch (JSONException ex) {
+                    LOG.d(LOG_TAG, "Should never happen");
+                }
+            }
+        });
     }
 
     /**
@@ -706,10 +612,6 @@ public class InAppBrowser extends CordovaPlugin {
     private boolean getShowLocationBar() {
         return this.showLocationBar;
     }
-    
-    private boolean getSoftClose() {
-           return this.softClose;
-    }
 
     private InAppBrowser getInAppBrowser() {
         return this;
@@ -730,7 +632,7 @@ public class InAppBrowser extends CordovaPlugin {
 
         if (features != null) {
             String show = features.get(LOCATION);
-            if (show != null) {
+            /*if (show != null) {
                 showLocationBar = show.equals("yes") ? true : false;
             }
             if(showLocationBar) {
@@ -738,7 +640,7 @@ public class InAppBrowser extends CordovaPlugin {
                 String hideUrl = features.get(HIDE_URL);
                 if(hideNavigation != null) hideNavigationButtons = hideNavigation.equals("yes") ? true : false;
                 if(hideUrl != null) hideUrlBar = hideUrl.equals("yes") ? true : false;
-            }
+            }*/
             String zoom = features.get(ZOOM);
             if (zoom != null) {
                 showZoomControls = zoom.equals("yes") ? true : false;
@@ -782,10 +684,6 @@ public class InAppBrowser extends CordovaPlugin {
             if (closeButtonColorSet != null) {
                 closeButtonColor = closeButtonColorSet;
             }
-            String soft = features.get(SOFT_CLOSE);
-            if(soft != null) {
-                this.softClose = soft.equals("yes") ? true : false;
-	    }
             String leftToRightSet = features.get(LEFT_TO_RIGHT);
             leftToRight = leftToRightSet != null && leftToRightSet.equals("yes");
 
@@ -797,10 +695,10 @@ public class InAppBrowser extends CordovaPlugin {
             if (navigationButtonColorSet != null) {
                 navigationButtonColor = navigationButtonColorSet;
             }
-            String showFooterSet = features.get(FOOTER);
+            /*String showFooterSet = features.get(FOOTER);
             if (showFooterSet != null) {
                 showFooter = showFooterSet.equals("yes") ? true : false;
-            }
+            }*/
             String footerColorSet = features.get(FOOTER_COLOR);
             if (footerColorSet != null) {
                 footerColor = footerColorSet;
@@ -848,13 +746,12 @@ public class InAppBrowser extends CordovaPlugin {
                 }
                 else {
                     ImageButton close = new ImageButton(cordova.getActivity());
-                    int closeResId = activityRes.getIdentifier("ic_action_save", "drawable", cordova.getActivity().getPackageName());
+                    int closeResId = activityRes.getIdentifier("ic_action_remove", "drawable", cordova.getActivity().getPackageName());
                     Drawable closeIcon = activityRes.getDrawable(closeResId);
                     if (closeButtonColor != "") close.setColorFilter(android.graphics.Color.parseColor(closeButtonColor));
                     close.setImageDrawable(closeIcon);
                     close.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    if (Build.VERSION.SDK_INT >= 16)
-                        close.getAdjustViewBounds();
+                    close.getAdjustViewBounds();
 
                     _close = close;
                 }
@@ -863,102 +760,18 @@ public class InAppBrowser extends CordovaPlugin {
                 if (leftToRight) closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 else closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 _close.setLayoutParams(closeLayoutParams);
+                _close.setBackground(null);
 
-                if (Build.VERSION.SDK_INT >= 16)
-                    _close.setBackground(null);
-                else
-                    _close.setBackgroundDrawable(null);
-
-                _close.setContentDescription("Save Button");
+                _close.setContentDescription("Close Button");
                 _close.setId(Integer.valueOf(id));
                 _close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        softCloseDialog();
+                        closeDialog();
                     }
                 });
 
                 return _close;
             }
-
-		private View createCancelButton(int id) {
-                View _cancel;
-                Resources activityRes = cordova.getActivity().getResources();
-
-                /*if (closeButtonCaption != "") {
-                    // Use TextView for text
-                    TextView close = new TextView(cordova.getActivity());
-                    close.setText(closeButtonCaption);
-                    close.setTextSize(20);
-                    if (closeButtonColor != "") close.setTextColor(android.graphics.Color.parseColor(closeButtonColor));
-                    close.setGravity(android.view.Gravity.CENTER_VERTICAL);
-                    close.setPadding(this.dpToPixels(10), 0, this.dpToPixels(10), 0);
-                    _close = close;
-                }
-                else*/ {
-                    ImageButton cancel = new ImageButton(cordova.getActivity());
-                    int cancelResId = activityRes.getIdentifier("ic_action_back", "drawable", cordova.getActivity().getPackageName());
-                    Drawable cancelIcon = activityRes.getDrawable(cancelResId);
-                    //if (closeButtonColor != "") close.setColorFilter(android.graphics.Color.parseColor(closeButtonColor));
-                    cancel.setImageDrawable(cancelIcon);
-                    cancel.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    if (Build.VERSION.SDK_INT >= 16)
-                        cancel.getAdjustViewBounds();
-
-                    _cancel = cancel;
-                }
-
-                RelativeLayout.LayoutParams cancelLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-                if (leftToRight) cancelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                else cancelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                _cancel.setLayoutParams(cancelLayoutParams);
-
-                if (Build.VERSION.SDK_INT >= 16)
-                    _cancel.setBackground(null);
-                else
-                    _cancel.setBackgroundDrawable(null);
-
-                _cancel.setContentDescription("Cancel Button");
-                _cancel.setId(Integer.valueOf(id));
-                _cancel.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        hardCloseDialog();
-                    }
-                });
-
-                return _cancel;
-            }
-		
-	    /*private View createCancelButton(int id){
-                View _close;
-                Resources activityRes = cordova.getActivity().getResources();
-
-                TextView close = new TextView(cordova.getActivity());
-                    close.setText("CANCEL");
-                    close.setTextSize(20);
-                    close.setTextColor(android.graphics.Color.parseColor("#999999"));
-                    close.setGravity(android.view.Gravity.CENTER_VERTICAL);
-                    close.setPadding(this.dpToPixels(5), 0, this.dpToPixels(75), 0);
-                    _close = close;
-
-                RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-                closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                _close.setLayoutParams(closeLayoutParams);
-
-                if (Build.VERSION.SDK_INT >= 16)
-                    _close.setBackground(null);
-                else
-                    _close.setBackgroundDrawable(null);
-
-                _close.setContentDescription("CANCEL");
-                _close.setId(Integer.valueOf(id));
-                _close.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        hardCloseDialog();
-                    }
-                });
-
-                return _close;
-            }*/
 
             @SuppressLint("NewApi")
             public void run() {
@@ -1008,7 +821,7 @@ public class InAppBrowser extends CordovaPlugin {
                 // Back button
                 ImageButton back = new ImageButton(cordova.getActivity());
                 RelativeLayout.LayoutParams backLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-                backLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                backLayoutParams.addRule(RelativeLayout.ALIGN_LEFT);
                 back.setLayoutParams(backLayoutParams);
                 back.setContentDescription("Back Button");
                 back.setId(Integer.valueOf(2));
@@ -1016,15 +829,11 @@ public class InAppBrowser extends CordovaPlugin {
                 int backResId = activityRes.getIdentifier("ic_action_previous_item", "drawable", cordova.getActivity().getPackageName());
                 Drawable backIcon = activityRes.getDrawable(backResId);
                 if (navigationButtonColor != "") back.setColorFilter(android.graphics.Color.parseColor(navigationButtonColor));
-                if (Build.VERSION.SDK_INT >= 16)
-                    back.setBackground(null);
-                else
-                    back.setBackgroundDrawable(null);
+                back.setBackground(null);
                 back.setImageDrawable(backIcon);
                 back.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                back.setPadding(0, this.dpToPixels(10), this.dpToPixels(100), this.dpToPixels(10));
-                if (Build.VERSION.SDK_INT >= 16)
-                    back.getAdjustViewBounds();
+                back.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
+                back.getAdjustViewBounds();
 
                 back.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -1035,22 +844,18 @@ public class InAppBrowser extends CordovaPlugin {
                 // Forward button
                 ImageButton forward = new ImageButton(cordova.getActivity());
                 RelativeLayout.LayoutParams forwardLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-                forwardLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                forwardLayoutParams.addRule(RelativeLayout.RIGHT_OF, 2);
                 forward.setLayoutParams(forwardLayoutParams);
                 forward.setContentDescription("Forward Button");
                 forward.setId(Integer.valueOf(3));
                 int fwdResId = activityRes.getIdentifier("ic_action_next_item", "drawable", cordova.getActivity().getPackageName());
                 Drawable fwdIcon = activityRes.getDrawable(fwdResId);
                 if (navigationButtonColor != "") forward.setColorFilter(android.graphics.Color.parseColor(navigationButtonColor));
-                if (Build.VERSION.SDK_INT >= 16)
-                    forward.setBackground(null);
-                else
-                    forward.setBackgroundDrawable(null);
+                forward.setBackground(null);
                 forward.setImageDrawable(fwdIcon);
                 forward.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                forward.setPadding(0, this.dpToPixels(10), this.dpToPixels(65), this.dpToPixels(10));
-                if (Build.VERSION.SDK_INT >= 16)
-                    forward.getAdjustViewBounds();
+                forward.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
+                forward.getAdjustViewBounds();
 
                 forward.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -1093,48 +898,17 @@ public class InAppBrowser extends CordovaPlugin {
                 if(footerColor != "") {
                     _footerColor = Color.parseColor(footerColor);
                 } else {
-                    _footerColor = android.graphics.Color.WHITE;
+                    _footerColor = android.graphics.Color.LTGRAY;
                 }
                 footer.setBackgroundColor(_footerColor);
                 RelativeLayout.LayoutParams footerLayout = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(44));
-                //footerLayout.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                footerLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
                 footer.setLayoutParams(footerLayout);
                 if (closeButtonCaption != "") footer.setPadding(this.dpToPixels(8), this.dpToPixels(8), this.dpToPixels(8), this.dpToPixels(8));
                 footer.setHorizontalGravity(Gravity.LEFT);
                 footer.setVerticalGravity(Gravity.BOTTOM);
 
-		  		View footerCancel = createCancelButton(9);
-		  		footer.addView(footerCancel);
-                
-		if(softClose) {
-                    ImageButton logo = new ImageButton(cordova.getActivity());
-                RelativeLayout.LayoutParams logoLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-		logoLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                logo.setLayoutParams(logoLayoutParams);
-                logo.setContentDescription("Sous Chef Recipes");
-                logo.setId(Integer.valueOf(31));
-                int logoResId = activityRes.getIdentifier("sous_chef_recipes_logo", "drawable", cordova.getActivity().getPackageName());
-                Drawable logoIcon = activityRes.getDrawable(logoResId);
-                if (navigationButtonColor != "") logo.setColorFilter(android.graphics.Color.parseColor(navigationButtonColor));
-                if (Build.VERSION.SDK_INT >= 16)
-                    logo.setBackground(null);
-                else
-                    logo.setBackgroundDrawable(null);
-                logo.setImageDrawable(logoIcon);
-				logo.setPadding(this.dpToPixels(50), 0, this.dpToPixels(10), 0);
-                //logo.setPadding(0, this.dpToPixels(10), 0, this.dpToPixels(10));
-                if (Build.VERSION.SDK_INT >= 16)
-                    logo.getAdjustViewBounds();
-
-                logo.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        hardCloseDialog();
-                    }
-		});
-			
-		    footer.addView(logo);
-		}
-		View footerClose = createCloseButton(7);
+                View footerClose = createCloseButton(7);
                 footer.addView(footerClose);
 
 
@@ -1144,15 +918,14 @@ public class InAppBrowser extends CordovaPlugin {
                 inAppWebView.setId(Integer.valueOf(6));
                 // File Chooser Implemented ChromeClient
                 inAppWebView.setWebChromeClient(new InAppChromeClient(thatWebView) {
-                    // For Android 5.0+
                     public boolean onShowFileChooser (WebView webView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams)
                     {
                         LOG.d(LOG_TAG, "File Chooser 5.0+");
                         // If callback exists, finish it.
-                        if(mUploadCallbackLollipop != null) {
-                            mUploadCallbackLollipop.onReceiveValue(null);
+                        if(mUploadCallback != null) {
+                            mUploadCallback.onReceiveValue(null);
                         }
-                        mUploadCallbackLollipop = filePathCallback;
+                        mUploadCallback = filePathCallback;
 
                         // Create File Chooser Intent
                         Intent content = new Intent(Intent.ACTION_GET_CONTENT);
@@ -1160,30 +933,9 @@ public class InAppBrowser extends CordovaPlugin {
                         content.setType("*/*");
 
                         // Run cordova startActivityForResult
-                        cordova.startActivityForResult(InAppBrowser.this, Intent.createChooser(content, "Select File"), FILECHOOSER_REQUESTCODE_LOLLIPOP);
+                        cordova.startActivityForResult(InAppBrowser.this, Intent.createChooser(content, "Select File"), FILECHOOSER_REQUESTCODE);
                         return true;
                     }
-
-                    // For Android 4.1+
-                    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture)
-                    {
-                        LOG.d(LOG_TAG, "File Chooser 4.1+");
-                        // Call file chooser for Android 3.0+
-                        openFileChooser(uploadMsg, acceptType);
-                    }
-
-                    // For Android 3.0+
-                    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType)
-                    {
-                        LOG.d(LOG_TAG, "File Chooser 3.0+");
-                        mUploadCallback = uploadMsg;
-                        Intent content = new Intent(Intent.ACTION_GET_CONTENT);
-                        content.addCategory(Intent.CATEGORY_OPENABLE);
-
-                        // run startActivityForResult
-                        cordova.startActivityForResult(InAppBrowser.this, Intent.createChooser(content, "Select File"), FILECHOOSER_REQUESTCODE);
-                    }
-
                 });
                 currentClient = new InAppBrowserClient(thatWebView, edittext, beforeload);
                 inAppWebView.setWebViewClient(currentClient);
@@ -1208,10 +960,8 @@ public class InAppBrowser extends CordovaPlugin {
                     }
                 }
 
-                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    settings.setMediaPlaybackRequiresUserGesture(mediaPlaybackRequiresUserGesture);
-                    inAppWebView.addJavascriptInterface(new JsObject(), "cordova_iab");
-                }
+                settings.setMediaPlaybackRequiresUserGesture(mediaPlaybackRequiresUserGesture);
+                inAppWebView.addJavascriptInterface(new JsObject(), "cordova_iab");
 
                 String overrideUserAgent = preferences.getString("OverrideUserAgent", null);
                 String appendUserAgent = preferences.getString("AppendUserAgent", null);
@@ -1239,10 +989,8 @@ public class InAppBrowser extends CordovaPlugin {
                     CookieManager.getInstance().removeSessionCookie();
                 }
 
-                // Enable Thirdparty Cookies on >=Android 5.0 device
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    CookieManager.getInstance().setAcceptThirdPartyCookies(inAppWebView,true);
-                }
+                // Enable Thirdparty Cookies
+                CookieManager.getInstance().setAcceptThirdPartyCookies(inAppWebView,true);
 
                 inAppWebView.loadUrl(url);
                 inAppWebView.setId(Integer.valueOf(6));
@@ -1255,29 +1003,28 @@ public class InAppBrowser extends CordovaPlugin {
                 inAppWebView.requestFocusFromTouch();
 
                 // Add the back and forward buttons to our action button container layout
-                footer.addView(back);
-                footer.addView(forward);
+                actionButtonContainer.addView(back);
+                actionButtonContainer.addView(forward);
 
                 // Add the views to our toolbar if they haven't been disabled
-                //if (!hideNavigationButtons) toolbar.addView(actionButtonContainer);
+                if (!hideNavigationButtons) toolbar.addView(actionButtonContainer);
                 if (!hideUrlBar) toolbar.addView(edittext);
 
                 // Don't add the toolbar if its been disabled
                 if (getShowLocationBar()) {
                     // Add our toolbar to our main view/layout
-                    //main.addView(toolbar);
+                    main.addView(toolbar);
                 }
 
                 // Add our webview to our main view/layout
                 RelativeLayout webViewLayout = new RelativeLayout(cordova.getActivity());
-				
-				// Don't add the footer unless it's been enabled
+                webViewLayout.addView(inAppWebView);
+                main.addView(webViewLayout);
+
+                // Don't add the footer unless it's been enabled
                 if (showFooter) {
                     webViewLayout.addView(footer);
                 }
-				
-                webViewLayout.addView(inAppWebView);
-                main.addView(webViewLayout);
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 lp.copyFrom(dialog.getWindow().getAttributes());
@@ -1334,32 +1081,14 @@ public class InAppBrowser extends CordovaPlugin {
      * @param intent the data from android file chooser
      */
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        // For Android >= 5.0
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            LOG.d(LOG_TAG, "onActivityResult (For Android >= 5.0)");
-            // If RequestCode or Callback is Invalid
-            if(requestCode != FILECHOOSER_REQUESTCODE_LOLLIPOP || mUploadCallbackLollipop == null) {
-                super.onActivityResult(requestCode, resultCode, intent);
-                return;
-            }
-            mUploadCallbackLollipop.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, intent));
-            mUploadCallbackLollipop = null;
+        LOG.d(LOG_TAG, "onActivityResult");
+        // If RequestCode or Callback is Invalid
+        if(requestCode != FILECHOOSER_REQUESTCODE || mUploadCallback == null) {
+            super.onActivityResult(requestCode, resultCode, intent);
+            return;
         }
-        // For Android < 5.0
-        else {
-            LOG.d(LOG_TAG, "onActivityResult (For Android < 5.0)");
-            // If RequestCode or Callback is Invalid
-            if(requestCode != FILECHOOSER_REQUESTCODE || mUploadCallback == null) {
-                super.onActivityResult(requestCode, resultCode, intent);
-                return;
-            }
-
-            if (null == mUploadCallback) return;
-            Uri result = intent == null || resultCode != cordova.getActivity().RESULT_OK ? null : intent.getData();
-
-            mUploadCallback.onReceiveValue(result);
-            mUploadCallback = null;
-        }
+        mUploadCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, intent));
+        mUploadCallback = null;
     }
 
     /**
@@ -1559,28 +1288,13 @@ public class InAppBrowser extends CordovaPlugin {
             return false;
         }
 
-
-        /**
-         * Legacy (deprecated in API 21)
-         * For Android 4.4 and below.
-         * @param view
-         * @param url
-         * @return
-         */
-        @SuppressWarnings("deprecation")
-        @Override
-        public WebResourceResponse shouldInterceptRequest (final WebView view, String url) {
-            return shouldInterceptRequest(url, super.shouldInterceptRequest(view, url), null);
-        }
-
         /**
          * New (added in API 21)
          * For Android 5.0 and above.
          *
-         * @param webView
+         * @param view
          * @param request
          */
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             return shouldInterceptRequest(request.getUrl().toString(), super.shouldInterceptRequest(view, request), request.getMethod());
@@ -1631,16 +1345,10 @@ public class InAppBrowser extends CordovaPlugin {
             super.onPageFinished(view, url);
 
             // Set the namespace for postMessage()
-            if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                injectDeferredObject("window.webkit={messageHandlers:{cordova_iab:cordova_iab}}", null);
-            }
+            injectDeferredObject("window.webkit={messageHandlers:{cordova_iab:cordova_iab}}", null);
 
             // CB-10395 InAppBrowser's WebView not storing cookies reliable to local device storage
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                CookieManager.getInstance().flush();
-            } else {
-                CookieSyncManager.getInstance().sync();
-            }
+            CookieManager.getInstance().flush();
 
             // https://issues.apache.org/jira/browse/CB-11248
             view.clearFocus();
