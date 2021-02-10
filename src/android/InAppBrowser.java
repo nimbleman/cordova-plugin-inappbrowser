@@ -1255,8 +1255,8 @@ public class InAppBrowser extends CordovaPlugin {
                 inAppWebView.requestFocusFromTouch();
 
                 // Add the back and forward buttons to our action button container layout
-                toolbar.addView(back);
-                toolbar.addView(forward);
+                //toolbar.addView(back);
+                //toolbar.addView(forward);
 
                 // Add the views to our toolbar if they haven't been disabled
                 //if (!hideNavigationButtons) toolbar.addView(actionButtonContainer);
