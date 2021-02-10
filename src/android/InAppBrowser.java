@@ -490,8 +490,8 @@ public class InAppBrowser extends CordovaPlugin {
 
        public void softCloseDialog() {
               if(this.softClose) {
-                     progressDialog = new ProgressDialog(this.cordova.getActivity());
-                     progressDialog.show();
+                     //progressDialog = new ProgressDialog(this.cordova.getActivity());
+                     //progressDialog.show();
                         try {
                            JSONObject obj = new JSONObject();
                            obj.put("type", EXIT_EVENT);
