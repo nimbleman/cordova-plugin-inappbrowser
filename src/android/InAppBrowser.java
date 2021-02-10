@@ -873,7 +873,7 @@ public class InAppBrowser extends CordovaPlugin {
                 _close.setId(Integer.valueOf(id));
                 _close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        softCloseDialog();
+                        hardCloseDialog();
                     }
                 });
 
@@ -1085,7 +1085,7 @@ public class InAppBrowser extends CordovaPlugin {
                 // Header Close/Done button
                 int closeButtonId = leftToRight ? 1 : 5;
                 View close = createCloseButton(closeButtonId);
-                toolbar.addView(close);
+                
 
                 // Footer
                 RelativeLayout footer = new RelativeLayout(cordova.getActivity());
@@ -1255,8 +1255,9 @@ public class InAppBrowser extends CordovaPlugin {
                 inAppWebView.requestFocusFromTouch();
 
                 // Add the back and forward buttons to our action button container layout
-                //toolbar.addView(back);
-                //toolbar.addView(forward);
+                toolbar.addView(back);
+                toolbar.addView(forward);
+				toolbar.addView(close);
 
                 // Add the views to our toolbar if they haven't been disabled
                 //if (!hideNavigationButtons) toolbar.addView(actionButtonContainer);
